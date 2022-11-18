@@ -21,15 +21,8 @@ def log_args(args, _logger):
     _log_obj("Args", vars(args)["_content"], "")
 
 
-def _get_wandb_config(args):
-    included_keys = ['eval_every', 'optim', 'lr', 'loss', 'epochs', 'num_workers']
-    wandb_config = {k: args[k] for k in included_keys}
-    wandb_config.update(**args)
-    return wandb_config
-
-
 def init_wandb(args):
     wandb_mode = os.environ['WANDB_MODE'] if 'WANDB_MODE' in os.environ.keys() else args.wandb.mode
-    wandb.init(mode=wandb_mode, project=args.wandb.project, entity=args.wandb.wandb_entity, config=_get_wandb_config(args),
-               group=args.experiment_name, resume=(args.continue_from != ""),
-               name=args.experiment_name)
+    wandb.init(mode=wandb_mode, project=args.wandb.project, entity=args.wandb.wandb_entity,
+               config=args, group=args.experiment_name,
+               resume=not args.reset, name=args.experiment_name)
