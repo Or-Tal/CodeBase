@@ -3,11 +3,13 @@
 # LICENSE file in the root directory of this source tree.
 # Author: Or Tal.
 
+# dataset builder related
+data_builder_name: "dummy"
+
+# dataset related
 tr: egs/example/tr.json
 cv: egs/example/cv.json
 tt: egs/example/tt.json
-
-# dset related
 sample_rate: 16000
 segment: 2.5  # in seconds, how long each sample should be
 stride: 0.5    # in seconds, how much to stride between training examples
