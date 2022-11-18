@@ -1,0 +1,7 @@
+# @package model
+# This source code is licensed under MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+kernels: [11, 5, 3]
+initial_hidden_channels: 64
+in_channels: 1

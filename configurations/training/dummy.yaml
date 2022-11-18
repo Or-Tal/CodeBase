@@ -1,0 +1,12 @@
+# @package training
+# This source code is licensed under MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+# Optimization related
+optim: adam
+lr: 3e-4
+beta: 0.9
+beta2: 0.999
+lr_decay: 0.999
+epochs: 100
+batch_size: 32

@@ -1,0 +1,14 @@
+# @package dset
+# This source code is licensed under MIT license found in the
+# LICENSE file in the root directory of this source tree.
+
+clean_tr: egs/example/tr.json
+clean_cv: egs/example/cv.json
+clean_tt: egs/example/tt.json
+clean_enh: None
+
+# dset related
+sample_rate: 16000
+segment: 2.5  # in seconds, how long each sample should be
+stride: 0.5    # in seconds, how much to stride between training examples
+pad: true   # if training sample is too short, pad it
