@@ -6,11 +6,15 @@
 tr: egs/example/tr.json
 cv: egs/example/cv.json
 tt: egs/example/tt.json
-enh: None
 
 # dset related
 sample_rate: 16000
 segment: 2.5  # in seconds, how long each sample should be
 stride: 0.5    # in seconds, how much to stride between training examples
+override_segment_length: None # if set, overrides computed segment length (in length of samples)
+override_stride_length: None # if set, overrides computed stride length (in length of samples)
 pad: true   # if training sample is too short, pad it
 channels: 1
+
+# dataloader related
+num_workers: 2

@@ -46,8 +46,9 @@ class SimpleAudioDataset:
         self.files = self.construct_json(key_for_json_file)  # this dummy assumes a list of (path, length) tuples
         self.ignore_length = ignore_length
         self.include_path = include_path
-        self.length_of_a_single_sample = int(self.cfg.sample_rate * self.cfg.segment)
-        self.stride = int(self.cfg.sample_rate * self.cfg.stride)
+        self.length_of_a_single_sample = dataset_config.override_segment_length or \
+                                         int(self.cfg.sample_rate * self.cfg.segment)
+        self.stride = dataset_config.override_stride_length or int(self.cfg.sample_rate * self.cfg.stride)
         # store map in mem: index -> (file_path, segment_index_in_sample, length of the signal)
         self.num_samples, self.idx_to_sample_map = self.count_num_examples()
 
@@ -66,7 +67,8 @@ class SimpleAudioDataset:
         # validation check
         target_sr, target_channels = self.cfg.sample_rate or sr, self.cfg.channels or out.shape[0]
         assert target_sr == sr, f"Expected {file} to have sample rate of {target_sr}, but got {sr}"
-        assert out.shape[0] == target_channels, f"Expected {file} to have channels of {target_channels}, but got {out.shape[0]}"
+        assert out.shape[
+                   0] == target_channels, f"Expected {file} to have channels of {target_channels}, but got {out.shape[0]}"
 
         if length_of_a_single_sample and length_of_a_single_sample > out.shape[-1]:
             out = F.pad(out, (0, length_of_a_single_sample - out.shape[-1]))
