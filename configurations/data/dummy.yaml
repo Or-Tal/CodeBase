@@ -1,6 +1,7 @@
 # @package dset
 # This source code is licensed under MIT license found in the
 # LICENSE file in the root directory of this source tree.
+# Author: Or Tal.
 
 clean_tr: egs/example/tr.json
 clean_cv: egs/example/cv.json
