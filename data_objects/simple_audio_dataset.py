@@ -11,7 +11,7 @@ import math
 class SimpleAudioDataset:
 
     def construct_json(self, key_for_json_file):
-        with open(self.cfg.key_for_json_file, "r") as f:
+        with open(getattr(self.cfg, key_for_json_file), "r") as f:
             files = json.load(f)
         return files
 
@@ -20,23 +20,23 @@ class SimpleAudioDataset:
         idx_map = dict()
         for file, file_length in self.files:
             if self.ignore_length:  # case where we iterate over complete samples
-                idx_map[cur_idx] = (file, 0, file_length)
+                idx_map[cur_idx] = (file, 0)
                 cur_idx += 1
             elif file_length < self.length_of_a_single_sample and self.cfg.pad:  # short sample and pad is true
-                idx_map[cur_idx] = (file, 0, file_length)
+                idx_map[cur_idx] = (file, 0)
                 cur_idx += 1
             elif self.cfg.pad:
                 n = cur_idx + int(math.ceil((file_length - self.length_of_a_single_sample) / self.stride) + 1)
                 i = 0
                 while cur_idx < n:
-                    idx_map[cur_idx] = (file, i, file_length)
+                    idx_map[cur_idx] = (file, i)
                     cur_idx += 1
                     i += 1
             else:
                 n = (file_length - self.length_of_a_single_sample) // self.stride + 1
                 i = 0
                 while cur_idx < n:
-                    idx_map[cur_idx] = (file, i, file_length)
+                    idx_map[cur_idx] = (file, i)
                     cur_idx += 1
                     i += 1
         return cur_idx, idx_map
@@ -48,13 +48,14 @@ class SimpleAudioDataset:
         self.include_path = include_path
         self.length_of_a_single_sample = int(self.cfg.sample_rate * self.cfg.segment)
         self.stride = int(self.cfg.sample_rate * self.cfg.stride)
+        # store map in mem: index -> (file_path, segment_index_in_sample, length of the signal)
         self.num_samples, self.idx_to_sample_map = self.count_num_examples()
 
     def __len__(self):
         return self.num_samples
 
     def __getitem__(self, index):
-        file, segment_idx, file_length = self.idx_to_sample_map[index]
+        file, segment_idx = self.idx_to_sample_map[index]
         flag = torchaudio.get_audio_backend() in ['soundfile', 'sox_io']
         offset = 0 if self.ignore_length else self.stride * segment_idx
         length_of_a_single_sample = 0 if self.ignore_length else self.length_of_a_single_sample
