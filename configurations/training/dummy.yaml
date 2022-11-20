@@ -5,9 +5,29 @@
 
 # Optimization related
 optim: adam
-lr: 3e-4
-beta: 0.9
-beta2: 0.999
+optimizer_args:
+  lr: 3e-4
+  betas: (0.9, 0.999)
 lr_decay: 0.999
 epochs: 100
 batch_size: 32
+loss_name: l1
+
+# Weights and Biases
+wandb:
+  mode: ${wandb_mode} # online/offline/disabled ;
+  log: all # gradients/parameters/all/None
+  log_freq: 5
+  n_files_to_log: 5 # number of files to upload to wandb or -1 for all files
+  wandb_entity: 'huji-dl-audio-lab' # TODO: fill entity name
+  project: "fill name" # TODO: fill wandb project name
+
+# Checkpointing, by default automatically load last checkpoint
+continue_best: False  # continue from best weights, else continue from last
+restart: False # Override existing model
+checkpoint_file: checkpoint.th
+samples_dir: samples
+save_again: False  # if true, only load checkpoint and save again, useful to reexport best.th
+only_do_inference: False
+eval_over_test_set_interval: -1
+serialization_interval: 1

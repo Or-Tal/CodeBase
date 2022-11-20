@@ -1,6 +1,8 @@
 import logging
 import os
 import hydra
+
+from solvers.solver_factory import SolverFactory
 from utils import init_wandb, log_args
 
 logger = logging.getLogger(__name__)
@@ -36,6 +38,12 @@ def _main(args):
 
 
 def init_train_loop(args):
+    # TODO: write solver and training initialization
+
+    # initialize a solver object
+    solver = SolverFactory.get_solver(args)
+
+    # run training
     pass
 
 

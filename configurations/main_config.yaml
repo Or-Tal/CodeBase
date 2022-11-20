@@ -12,26 +12,11 @@ defaults:
 seed: 2036
 
 experiment_name: dummy # this defines the directory this experiment is saved into and all the corresponding logging
+solver_name: base
+train: True # if false, train_or_eval script will load best/last (depends on train config) and evaluate over the test set
 
 # Weights and Biases
 wandb_mode: disabled # TODO: set to online to log
-wandb:
-  mode: ${wandb_mode} # online/offline/disabled ;
-  log: all # gradients/parameters/all/None
-  log_freq: 5
-  n_files_to_log: 5 # number of files to upload to wandb or -1 for all files
-  wandb_entity: 'huji-dl-audio-lab' # TODO: fill entity name
-  project: "fill name" # TODO: fill wandb project name
-
-# Checkpointing, by default automatically load last checkpoint
-checkpoint: true
-continue_best: False  # continue from best, not last state if continue_from is set.
-restart: false # Ignore existing checkpoints
-checkpoint_file: checkpoint.th
-best_file: best.th  # will contain only best model at any point
-history_file: history.json
-samples_dir: samples
-save_again: false  # if true, only load checkpoint and save again, useful to reexport best.th
 
 # Hydra config
 hydra:
