@@ -76,19 +76,19 @@ def create_lists_for_jsons():
         info = torchaudio.info(filepath)
         if hasattr(info, 'num_frames'):
             # new version of torchaudio
-            test.append([filepath, info.num_frames])
+            test.append([filepath.__str__(), info.num_frames])
         else:
             siginfo = info[0]
-            test.append([filepath, siginfo.length // siginfo.channels])
+            test.append([filepath.__str__(), siginfo.length // siginfo.channels])
 
     return train, val, test
 
 
 def create_dirs_and_save_jsons(train, val, test):
-    dir = f"{args.project_dir}/egs/{args.dataset_name}"
-    os.makedirs(dir, exist_ok=True)
+    directory = Path(args.project_dir).joinpath("egs").joinpath(args.dataset_name)
+    os.makedirs(directory, exist_ok=True)
     for ss, ss_name in zip([train, val, test], ["tr", "cv", "tt"]):
-        with open(f"{dir}/{ss_name}.json", "w") as f:
+        with open(directory.joinpath(f"{ss_name}.json").__str__(), "w") as f:
             f.write(json.dumps(ss, indent=4))
 
 
