@@ -28,14 +28,14 @@ def create_lists_for_jsons():
     train, val, test = [], [], []
 
     # loop over train_dir
-    train_dir = Path(args.train_dir)
+    train_dir = args.train_dir
     if isinstance(args.val_p, float) and args.brute_force_validation_split:
         files = list(os.listdir(train_dir))
         np.random.shuffle(files)
         n = int(len(files) * args.val_p)
         for idx, file_set in enumerate([files[:-n], files[-n:]]):
             for file in files[:-n]:
-                filepath = train_dir.joinpath(file)
+                filepath = f"{train_dir}/{file}"
                 info = torchaudio.info(filepath)
                 if hasattr(info, 'num_frames'):
                     # new version of torchaudio
@@ -56,7 +56,7 @@ def create_lists_for_jsons():
         else:
             val_files = args.val_p
         for file in tqdm(os.listdir(train_dir), desc="Train set"):
-            filepath = train_dir.joinpath(file)
+            filepath = f"{train_dir}/{file}"
             info = torchaudio.info(filepath)
             if hasattr(info, 'num_frames'):
                 # new version of torchaudio
@@ -70,16 +70,16 @@ def create_lists_for_jsons():
                 train.append(tmp)
 
     # loop over test dir
-    test_dir = Path(args.test_dir)
+    test_dir = args.test_dir
     for file in tqdm(os.listdir(test_dir), desc="Test set"):
-        filepath = test_dir.joinpath(file)
+        filepath = f"{test_dir}/{file}"
         info = torchaudio.info(filepath)
         if hasattr(info, 'num_frames'):
             # new version of torchaudio
-            test.append([filepath.__str__(), info.num_frames])
+            test.append([filepath, info.num_frames])
         else:
             siginfo = info[0]
-            test.append([filepath.__str__(), siginfo.length // siginfo.channels])
+            test.append([filepath, siginfo.length // siginfo.channels])
 
     return train, val, test
 
