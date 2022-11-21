@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import torchaudio
 import os
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-pd", "--project_dir", required=True, help="path to current project root")
@@ -54,7 +55,7 @@ def create_lists_for_jsons():
             val_files = speakers[:num_speakers_in_val]
         else:
             val_files = args.val_p
-        for file in os.listdir(train_dir):
+        for file in tqdm(os.listdir(train_dir), desc="Train set:"):
             filepath = train_dir.joinpath(file)
             info = torchaudio.info(filepath)
             if hasattr(info, 'num_frames'):
@@ -66,11 +67,11 @@ def create_lists_for_jsons():
             if True in [file.startswith(pref) for pref in val_files]:
                 val.append(tmp)
             else:
-                tr.append(tmp)
+                train.append(tmp)
 
     # loop over test dir
     test_dir = Path(args.test_dir)
-    for file in os.listdir(test_dir):
+    for file in tqdm(os.listdir(test_dir), desc="Test set:"):
         filepath = test_dir.joinpath(file)
         info = torchaudio.info(filepath)
         if hasattr(info, 'num_frames'):
