@@ -14,7 +14,7 @@ class DataFactory:
 
     @staticmethod
     def get_loaders(data_config) -> Tuple[DataLoader, DataLoader, DataLoader, Union[DataLoader, None]]:
-        assert hasattr("data_builder_name", data_config), "Please add 'data_builder_name' to model configuration."
+        assert hasattr(data_config, "data_builder_name" ), "Please add 'data_builder_name' to model configuration."
         if data_config.data_builder_name.lower() not in DataFactory.valid_builders.keys():
             raise ValueError(f"DsetBuilder: {data_config.data_builder_name} is not supported by DataFactory."
                              f"\nPlease make sure implementation is valid.")

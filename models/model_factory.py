@@ -12,7 +12,7 @@ class ModelFactory:
 
     @staticmethod
     def get_model(model_args):
-        assert hasattr("model_class_name", model_args), f"Please add 'model_class_name' to model configuration.\n{model_args}"
+        assert hasattr(model_args, "model_class_name"), f"Please add 'model_class_name' to model configuration.\n{model_args}"
         if model_args.model_class_name.lower() not in ModelFactory.allowed_models.keys():
             raise ValueError("given model_class_name is not supported by model factory.")
         return DummyAE(model_args)
