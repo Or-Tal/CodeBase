@@ -13,8 +13,8 @@ tt: egs/dummy/tt.json
 sample_rate: 16000
 segment: 3.0  # in seconds, how long each sample should be
 stride: 0.5    # in seconds, how much to stride between training examples
-override_segment_length: None # if set, overrides computed segment length (in length of samples)
-override_stride_length: None # if set, overrides computed stride length (in length of samples)
+override_segment_length: -1 # if > 0, overrides computed segment length (in length of samples)
+override_stride_length: -1 # if > 0, overrides computed stride length (in length of samples)
 pad: true   # if training sample is too short, pad it
 channels: 1
 

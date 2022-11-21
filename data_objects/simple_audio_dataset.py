@@ -49,8 +49,8 @@ class SimpleAudioDataset:
         self.ignore_length = ignore_length
         self.include_path = include_path
         self.length_of_a_single_sample = dataset_config.override_segment_length if \
-            dataset_config.override_segment_length is not None else int(self.cfg.sample_rate * self.cfg.segment)
-        self.stride = dataset_config.override_stride_length if dataset_config.override_stride_length is not None \
+            dataset_config.override_segment_length > 0 else int(self.cfg.sample_rate * self.cfg.segment)
+        self.stride = dataset_config.override_stride_length if dataset_config.override_stride_length > 0 \
             else int(self.cfg.sample_rate * self.cfg.stride)
         # store map in mem: index -> (file_path, segment_index_in_sample, length of the signal)
         self.num_samples, self.idx_to_sample_map = self.count_num_examples()
