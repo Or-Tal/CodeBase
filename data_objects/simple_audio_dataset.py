@@ -19,7 +19,6 @@ class SimpleAudioDataset:
         cur_idx = 0
         idx_map = dict()
         for file, file_length in self.files:
-            file_length = int(file_length)
             if self.ignore_length:  # case where we iterate over complete samples
                 idx_map[cur_idx] = (file, 0)
                 cur_idx += 1
@@ -47,7 +46,7 @@ class SimpleAudioDataset:
         self.files = self.construct_json(key_for_json_file)  # this dummy assumes a list of (path, length) tuples
         self.ignore_length = ignore_length
         self.include_path = include_path
-        self.length_of_a_single_sample = dataset_config.override_segment_length or \
+        self.length_of_a_single_sample = int(dataset_config.override_segment_length) or \
                                          int(self.cfg.sample_rate * self.cfg.segment)
         self.stride = dataset_config.override_stride_length or int(self.cfg.sample_rate * self.cfg.stride)
         # store map in mem: index -> (file_path, segment_index_in_sample, length of the signal)
