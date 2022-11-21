@@ -31,3 +31,6 @@ save_again: False  # if true, only load checkpoint and save again, useful to ree
 only_do_inference: False
 eval_over_test_set_interval: -1
 serialization_interval: 1
+
+num_workers: 1
+verbose: 0
