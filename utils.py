@@ -45,7 +45,7 @@ def log_args(args, _logger):
 
 
 def init_wandb(args):
-    wandb_mode = os.environ['WANDB_MODE'] if 'WANDB_MODE' in os.environ.keys() else args.wandb.mode
+    wandb_mode = os.environ['WANDB_MODE'] if 'WANDB_MODE' in os.environ.keys() else args.training.wandb.mode
     wandb.init(mode=wandb_mode, project=args.training.wandb.project, entity=args.training.wandb.wandb_entity,
                config=args, group=args.experiment_name,
                resume=not args.training.reset, name=args.experiment_name)
