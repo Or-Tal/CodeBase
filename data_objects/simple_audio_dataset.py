@@ -19,6 +19,7 @@ class SimpleAudioDataset:
         cur_idx = 0
         idx_map = dict()
         for file, file_length in self.files:
+            file_length = int(file_length)
             if self.ignore_length:  # case where we iterate over complete samples
                 idx_map[cur_idx] = (file, 0)
                 cur_idx += 1
