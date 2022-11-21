@@ -1,7 +1,7 @@
 # This source code is licensed under MIT license found in the
 # LICENSE file in the root directory of this source tree.
 # Author: Or Tal.
-from dummy_ae import DummyAE
+from models.dummy_ae import DummyAE
 
 
 class ModelFactory:
