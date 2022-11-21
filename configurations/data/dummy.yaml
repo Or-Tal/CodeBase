@@ -4,7 +4,7 @@
 # Author: Or Tal.
 
 # dataset builder related
-data_builder_name: "dummy"
+data_builder_name: dummy
 
 # dataset related
 tr: egs/dummy/tr.json
