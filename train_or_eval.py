@@ -44,7 +44,7 @@ def init_train_loop(args):
     solver = SolverFactory.get_solver(args)
 
     # run training
-    pass
+    solver.train()
 
 
 @hydra.main(config_path="configurations", config_name="main_config")
