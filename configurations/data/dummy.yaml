@@ -18,5 +18,7 @@ override_stride_length: -1 # if > 0, overrides computed stride length (in length
 pad: true   # if training sample is too short, pad it
 channels: 1
 
+batch_size: ${training.batch_size}
+
 # dataloader related
 num_workers: 2
