@@ -17,7 +17,7 @@ def init_hydra_and_logs(args):
     log_arguments(args)
     for key, value in args.data.items():
         if isinstance(value, str) and key not in ["matching"]:
-            args.dset[key] = hydra.utils.to_absolute_path(value)
+            args.data[key] = hydra.utils.to_absolute_path(value)
     __file__ = hydra.utils.to_absolute_path(__file__)
     if args.training.verbose:
         logger.setLevel(logging.DEBUG)
