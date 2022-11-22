@@ -229,13 +229,13 @@ class BaseSolver:
         self.opt.step()
         self.opt.zero_grad()
 
-    def run_single_batch(self, loss_function, batch, epoch_num, validation=False):
+    def run_single_batch(self, loss_function, batch, epoch_num, targets=None, validation=False):
         if validation:
             with torch.no_grad():
                 outputs = self.model(batch)
         else:
             outputs = self.model(batch)
-        loss = loss_function(outputs)
+        loss = loss_function(outputs, batch)
         if not validation:
             self.optimize(loss)
         return loss.item()

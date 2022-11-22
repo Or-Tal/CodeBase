@@ -59,12 +59,10 @@ class DummyAE(nn.Module):
     def forward(self, x):
         skips = []
         for i, en in enumerate(self.encoders):
-            print(f"x: {x.shape}")
             if i != 0:
                 skips.append(x)
             x = en(x)
         for i, de in enumerate(self.decoders):
-            print(f"x: {x.shape}")
             if i != 0:
                 x += skips.pop()
             x = de(x)
