@@ -226,7 +226,8 @@ class BaseSolver:
 
     def optimize(self, loss):
         with torch.autograd.set_detect_anomaly(True):
-            self.accelerator.backward(loss)
+            loss.backward()
+            # self.accelerator.backward(loss)
             self.opt.step()
             self.opt.zero_grad()
 
