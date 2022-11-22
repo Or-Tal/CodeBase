@@ -116,8 +116,10 @@ class BaseSolver:
         data_loaders = DataFactory.get_loaders(args.data)
         optimizers = self.get_optimizers(args.training, models)
 
-        accelerator, models, data_loaders, optimizers = \
+        accelerator, tmp = \
             self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
+
+        models, data_loaders, optimizers = tmp
 
         return accelerator, models, data_loaders, optimizers
 
