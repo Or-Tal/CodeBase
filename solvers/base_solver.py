@@ -232,6 +232,7 @@ class BaseSolver:
 
     def run_single_batch(self, loss_function, batch, epoch_num, validation=False):
         logger.info(f"batch: [{', '.join([str(type(t)) for t in batch])}]")
+        logger.info(print(batch[0]))
         if validation:
             with torch.no_grad():
                 outputs = self.model(batch[1])
