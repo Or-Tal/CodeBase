@@ -119,7 +119,7 @@ class BaseSolver:
         accelerator, tmp = \
             self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
 
-        models, data_loaders, optimizers = tmp
+        models, data_loaders, optimizers = tmp[0], tmp[1], tmp[2]
 
         return accelerator, models, data_loaders, optimizers
 
