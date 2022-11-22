@@ -21,5 +21,5 @@ class BaseBuilder(ABC):
 
     @staticmethod
     def create_dataloader(dset_config, dataset, batch_size=None, shuffle=False):
-        return DataLoader(dataset, batch_size or dset_config.batch_size,
+        return DataLoader(dataset=dataset, batch_size=batch_size or dset_config.batch_size,
                           num_workers=dset_config.num_workers or 1, shuffle=shuffle)
