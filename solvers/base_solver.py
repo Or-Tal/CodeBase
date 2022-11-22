@@ -231,14 +231,12 @@ class BaseSolver:
             self.opt.zero_grad()
 
     def run_single_batch(self, loss_function, batch, epoch_num, validation=False):
-        logger.info(f"batch: [{', '.join([str(type(t)) for t in batch])}]")
-        logger.info(print(batch[0]))
         if validation:
             with torch.no_grad():
-                outputs = self.model(batch[1])
+                outputs = self.model(batch)
         else:
-            outputs = self.model(batch[1])
-        loss = loss_function(outputs, torch.clone(batch[2].detach()))
+            outputs = self.model(batch)
+        loss = loss_function(outputs, batch)
         if not validation:
             self.optimize(loss)
         return loss.item()
