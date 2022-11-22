@@ -119,7 +119,7 @@ class BaseSolver:
         accelerator, (models, data_loaders, optimizers) = \
             self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
 
-        return [accelerator, models, data_loaders, optimizers]
+        return accelerator, models, data_loaders, optimizers
 
     def define_all_objects(self, args):
         accelerator, models, data_loaders, optimizers = self.initialize_all_training_objects(args)
