@@ -75,4 +75,4 @@ class SimpleAudioDataset:
         if length_of_a_single_sample and length_of_a_single_sample > out.shape[-1]:
             out = F.pad(out, (0, length_of_a_single_sample - out.shape[-1]))
 
-        return (out, file), out if self.include_path else out, out
+        return (out, file) if self.include_path else out
