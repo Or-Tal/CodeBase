@@ -205,7 +205,6 @@ class BaseSolver:
 
         # checkpoint related
         self.checkpoint_file_path = Path(args.training.checkpoint_file)
-        self.history_file_path = Path(args.training.history_file)
 
         # training related
         self.history = list()
