@@ -237,7 +237,7 @@ class BaseSolver:
                 outputs = self.model(batch[1])
         else:
             outputs = self.model(batch[1])
-        loss = loss_function(outputs, batch[2])
+        loss = loss_function(outputs, batch[2].detach())
         if not validation:
             self.optimize(loss)
         return loss.item()
