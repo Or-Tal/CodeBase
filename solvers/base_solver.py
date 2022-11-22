@@ -119,7 +119,7 @@ class BaseSolver:
         accelerator, tmp = \
             self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
 
-        logger.info(tmp)
+        logger.info(f"len: {len(tmp)} | [{', '.join([type(t) for t in tmp])}]")
 
         models, data_loaders, optimizers = tmp[0], tmp[1], tmp[2]
 
