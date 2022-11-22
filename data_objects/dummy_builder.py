@@ -11,8 +11,8 @@ class DummyBuilder(BaseBuilder):
 
     @staticmethod
     def get_tr_cv_tt_loaders(data_config) -> Tuple[DataLoader, DataLoader, DataLoader, Union[DataLoader, None]]:
-        tr_dset = SimpleAudioDataset(data_config, "tr")
-        cv_dset = SimpleAudioDataset(data_config, "cv", ignore_length=True)
+        tr_dset = SimpleAudioDataset(data_config, "tr", include_path=False)
+        cv_dset = SimpleAudioDataset(data_config, "cv", ignore_length=True, include_path=False)
         tt_dset = SimpleAudioDataset(data_config, "tt", ignore_length=True, include_path=True)
 
         return (
