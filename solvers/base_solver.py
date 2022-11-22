@@ -225,9 +225,10 @@ class BaseSolver:
         return self.accumulate_loss(losses, validation)
 
     def optimize(self, loss):
-        self.accelerator.backward(loss)
-        self.opt.step()
-        self.opt.zero_grad()
+        with torch.autograd.set_detect_anomaly(True):
+            self.accelerator.backward(loss)
+            self.opt.step()
+            self.opt.zero_grad()
 
     def run_single_batch(self, loss_function, batch, epoch_num, targets=None, validation=False):
         if validation:
