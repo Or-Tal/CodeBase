@@ -118,7 +118,9 @@ class BaseSolver:
 
         accelerator, tmp = \
             self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
-        if len(tmp) == 1 and isinstance(tmp[0], tuple):
+
+        # TODO: debug why this phenomena happens?
+        while (isinstance(tmp[0], tuple) or isinstance(tmp[0], list)) and len(tmp) == 1:
             tmp = tmp[0]
 
         logger.info(f"len: {len(tmp)} | [{', '.join([f'{type(t)}' for t in tmp])}]")
