@@ -1,3 +1,6 @@
+# This source code is licensed under MIT license found in the
+# LICENSE file in the root directory of this source tree.
+# Author: Or Tal.
 import logging
 import os
 import hydra

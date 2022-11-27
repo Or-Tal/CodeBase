@@ -131,6 +131,7 @@ class BaseSolver:
 
     def define_all_objects(self, args):
         accelerator, models, data_loaders, optimizers = self.initialize_all_training_objects(args)
+        logger.info(f"model: {next(models.parameters()).device}")
         self.accelerator = accelerator
         self.model = models
         self.tr_dl, self.cv_dl, self.tt_dl, self.enh_dl = data_loaders
