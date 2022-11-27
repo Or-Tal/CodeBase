@@ -8,7 +8,6 @@ import wandb as wandb
 
 
 def _log_obj(name, obj, prefix, _logger):
-
     if name in ["wandb", "dset", "model"]:
         try:
             obj = vars(obj)["_content"]
@@ -23,8 +22,9 @@ def _log_obj(name, obj, prefix, _logger):
 
 
 def copy_state(state):
-
-    return {k: copy_state(v) if isinstance(v, dict) else v.cpu().clone() for k, v in state.items()}
+    return {k: copy_state(v) if isinstance(v, dict) else
+    [t for t in v] if isinstance(v, list) else
+    v.cpu().clone() for k, v in state.items()}
 
 
 @contextmanager
