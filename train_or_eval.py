@@ -41,7 +41,7 @@ def _main(args):
     # init hydra and logs
     init_hydra_and_logs(args)
 
-    if args.ddp and args.rank is None:
+    if args.ddp and args.local_rank is None:
         start_ddp_workers(args)
     else:
         init_train_loop(args)
