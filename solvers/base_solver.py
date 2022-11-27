@@ -85,6 +85,8 @@ class BaseSolver:
             i += le
         return out
 
+    def init_accelerator_object(self):
+
     def initialize_with_accellerator(self, args, *object_list, device_placement=None):
         """
         This function uses Accelerator Class by huggingface to manage all distributed training.
@@ -106,6 +108,14 @@ class BaseSolver:
         flattened_objects = accelerator.prepare(*flattened_objects)
         return accelerator, self._unflatten_list_by_length(flattened_objects, lengths)
 
+    def load_model_to_gpu(self, models):
+        if torch.cuda.is_available():
+            if isinstance(models, list):
+                for m in models:
+                    m.to("cuda")
+            else:
+                models.to("cuda")
+
     def initialize_all_training_objects(self, args):
         """
         this function returns a list of all objects required for the training process
@@ -115,6 +125,7 @@ class BaseSolver:
         models = ModelFactory.get_model(args.model)
         data_loaders = DataFactory.get_loaders(args.data)
         optimizers = self.get_optimizers(args.training, models)
+        self.load_model_to_gpu(models)
 
         accelerator, tmp = \
             self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
@@ -131,7 +142,6 @@ class BaseSolver:
 
     def define_all_objects(self, args):
         accelerator, models, data_loaders, optimizers = self.initialize_all_training_objects(args)
-        logger.info(f"model: {next(models.parameters()).device}")
         self.accelerator = accelerator
         self.model = models
         self.tr_dl, self.cv_dl, self.tt_dl, self.enh_dl = data_loaders
@@ -235,10 +245,10 @@ class BaseSolver:
     def run_single_batch(self, loss_function, batch, epoch_num, validation=False):
         if validation:
             with torch.no_grad():
-                outputs = self.model(batch)
+                outputs = self.model(batch[0])
         else:
-            outputs = self.model(batch)
-        loss = loss_function(outputs, torch.clone(batch.detach()))
+            outputs = self.model(batch[0])
+        loss = loss_function(outputs, batch[1])
         if not validation:
             self.optimize(loss)
         return loss.item()
@@ -293,6 +303,8 @@ class BaseSolver:
                 logger.info(f"Epoch {epoch + 1}: {info}")
         if len(self.history) < self.args.training.epochs:
             logger.info(f"==== TRAINING ====")
+
+        logger.info(f"is cuda: {next(self.model.parameters()).is_cuda}")
 
         # Training loop
         best_loss = self.get_best_loss_from_history()
