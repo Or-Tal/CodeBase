@@ -1,6 +1,7 @@
 # This source code is licensed under MIT license found in the
 # LICENSE file in the root directory of this source tree.
 # Author: Or Tal.
+import logging
 
 import torch
 import torch.nn as nn
@@ -59,10 +60,12 @@ class DummyAE(nn.Module):
     def forward(self, x):
         skips = []
         for i, en in enumerate(self.encoders):
+            logging.info(f"x: {x.shape}")
             if i != 0:
                 skips.append(x)
             x = en(x)
         for i, de in enumerate(self.decoders):
+            logging.info(f"x: {x.shape}")
             if i != 0:
                 x = x + skips.pop()
             x = de(x)
