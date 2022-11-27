@@ -4,6 +4,7 @@
 import os
 from contextlib import contextmanager
 
+import torch
 import wandb as wandb
 
 
@@ -23,8 +24,8 @@ def _log_obj(name, obj, prefix, _logger):
 
 def copy_state(state):
     return {k: copy_state(v) if isinstance(v, dict) else
-    [t for t in v] if isinstance(v, list) else
-    v.cpu().clone() for k, v in state.items()}
+    [copy_state(t) for t in v] if isinstance(v, list) else
+    v.cpu().clone() if (isinstance(v, torch.Tensor) or isinstance(v, torch.cuda.Tensor)) else v for k, v in state.items()}
 
 
 @contextmanager
