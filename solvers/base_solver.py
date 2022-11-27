@@ -88,27 +88,6 @@ class BaseSolver:
     def init_accelerator_object(self):
         pass
 
-    # def initialize_with_accellerator(self, args, *object_list, device_placement=None):
-    #     """
-    #     This function uses Accelerator Class by huggingface to manage all distributed training.
-    #     Prepare all objects passed in `args` for distributed training and mixed precision, then return them in the same
-    #     order.
-    #     :param args: full configuration
-    #     :param object_list: Any of the following objects:
-    #                             - `torch.utils.data.DataLoader`: PyTorch Dataloader
-    #                             - `torch.nn.Module`: PyTorch Module
-    #                             - `torch.optim.Optimizer`: PyTorch Optimizer
-    #                             - `torch.optim.lr_scheduler._LRScheduler`: PyTorch LR Scheduler
-    #     :param device_placement: (`List[bool]`, *optional*):
-    #             Used to customize whether automatic device placement should be performed for each object passed. Needs
-    #             to be a list of the same length as `args`.
-    #     :return: accelerator, list of objects as passed
-    #     """
-    #     accelerator = Accelerator()
-    #     flattened_objects, lengths = self._flatten_list_for_accellerator(object_list)
-    #     flattened_objects = accelerator.prepare(*flattened_objects)
-    #     return accelerator, self._unflatten_list_by_length(flattened_objects, lengths)
-
     def load_model_to_gpu(self, models):
         if torch.cuda.is_available():
             if isinstance(models, list):
@@ -127,18 +106,6 @@ class BaseSolver:
         data_loaders = DataFactory.get_loaders(args.data)
         optimizers = self.get_optimizers(args.training, models)
 
-        # accelerator, tmp = \
-        #     self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
-        #
-        # # TODO: debug why this phenomena happens?
-        # while (isinstance(tmp[0], tuple) or isinstance(tmp[0], list)) and len(tmp) == 1:
-        #     tmp = tmp[0]
-        #
-        # logger.info(f"len: {len(tmp)} | [{', '.join([f'{type(t)}' for t in tmp])}]")
-        #
-        # models, data_loaders, optimizers = tmp[0], tmp[1], tmp[2]
-
-        # return accelerator, models, data_loaders, optimizers
         return models, data_loaders, optimizers
 
     def define_all_objects(self, args):
@@ -233,8 +200,9 @@ class BaseSolver:
     def run_single_epoch(self, loss_function, epoch_num, validation=False):
         loader = self.cv_dl if validation else self.tr_dl
         losses = []
+        device = next(self.model.parameters()).device
         for batch in tqdm.tqdm(loader, desc=f"Epoch {epoch_num} [{'Valid' if validation else 'Train'}]:", leave=False):
-            losses.append(self.run_single_batch(loss_function, batch, epoch_num, validation))
+            losses.append(self.run_single_batch(loss_function, batch, epoch_num, validation, device=device))
         return self.accumulate_loss(losses, validation)
 
     def optimize(self, loss):
@@ -244,7 +212,11 @@ class BaseSolver:
             self.opt.step()
             self.opt.zero_grad()
 
-    def run_single_batch(self, loss_function, batch, epoch_num, validation=False):
+    def run_single_batch(self, loss_function, batch, epoch_num, validation=False, device=None):
+        if device is None:
+            device = next(self.model.parameters()).device
+        batch.to(device)
+
         if validation:
             with torch.no_grad():
                 outputs = self.model(batch)
