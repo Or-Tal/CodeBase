@@ -239,8 +239,9 @@ class BaseSolver:
         min_loss = 1e20
         for step in self.history:
             logger.info(self.history)
-            if step[0] if isinstance(step, list) else step < min_loss:
-                min_loss = step[0]
+            tmp = step[0] if isinstance(step, list) else step
+            if tmp < min_loss:
+                min_loss = tmp
         return min_loss
 
     def check_if_model_has_improved(self, loss, best_loss):
