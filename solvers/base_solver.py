@@ -284,8 +284,9 @@ class BaseSolver:
         if self.history:
             logger.info("Restored training. Previous iterations:")
             for epoch, metrics in enumerate(self.history):
-                info = " ".join(f"{k.capitalize()}={v:.5f}" for k, v in metrics.items())
-                logger.info(f"Epoch {epoch + 1}: {info}")
+                if isinstance(metrics, dict):
+                    info = " ".join(f"{k.capitalize()}={v:.5f}" for k, v in metrics.items())
+                    logger.info(f"Epoch {epoch + 1}: {info}")
         if len(self.history) < self.args.training.epochs:
             logger.info(f"==== TRAINING ====")
 
