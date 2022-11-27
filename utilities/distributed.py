@@ -27,7 +27,7 @@ def init(configuration):
     # init distrib process
     if configuration.ddp:
         assert configuration.local_rank is not None and configuration.num_gpus is not None
-        local_rank = configuration.rank
+        local_rank = configuration.local_rank
         num_gpus = configuration.num_gpus
     if num_gpus == 1:
         return
