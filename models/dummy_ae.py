@@ -6,6 +6,7 @@ import logging
 import torch
 import torch.nn as nn
 from munch import DefaultMunch
+import torch.nn.functional as F
 
 
 class EncoderBlock(nn.Module):
@@ -57,15 +58,20 @@ class DummyAE(nn.Module):
             in_ch = out_ch
             out_ch *= 2
 
+    def pad_n_sum(self, x, skip):
+        if x.shape[-1] < skip.shape[-1]:
+            return x + skip[..., :x.shape[-1]]
+        elif x.shape[-1] > skip.shape[-1]:
+            skip = F.pad(skip, (0, x.shape[-1] - skip.shape[-1]), 'constant', 0)
+        return x + skip
+
     def forward(self, x):
         skips = []
         for i, en in enumerate(self.encoders):
-            logging.info(f"x: {x.shape}")
             if i != 0:
                 skips.append(x)
             x = en(x)
         for i, de in enumerate(self.decoders):
-            logging.info(f"x: {x.shape}")
             if i != 0:
                 x = x + skips.pop()
             x = de(x)
