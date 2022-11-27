@@ -272,10 +272,11 @@ class BaseSolver:
                 )
 
     def log_summary_for_epoch(self, epoch_num, train_time, val_time, train_loss, val_loss, val_metrics):
-        logger.info(f"tr_l: {type(train_loss)}, tr_t: {type(train_time)}")
-        logger.info(f"cv_l: {type(val_loss)}, cv_t: {type(val_time)}")
         logger.info(
-            f"Epoch: {epoch_num}| Tr_loss [{train_time:.2f} Sec] : {train_loss:.3f} | Val_loss [{val_time:.2f} Sec]: {val_loss:.3f}")
+            f"Epoch: {epoch_num}| Tr_loss [{train_time:.2f} Sec] : "
+            f"{', '.join([f'{t:.3f}' for t in train_loss]) if isinstance(train_loss, list) else f'{train_loss:.3f}'}"
+            f" | Val_loss [{val_time:.2f} Sec]: "
+            f"{', '.join([f'{t:.3f}' for t in val_loss]) if isinstance(val_loss, list) else f'{val_loss:.3f}'}")
 
     def train(self):
         if self.history:
