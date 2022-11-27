@@ -64,7 +64,7 @@ class DummyAE(nn.Module):
             x = en(x)
         for i, de in enumerate(self.decoders):
             if i != 0:
-                x += skips.pop()
+                x = x + skips.pop()
             x = de(x)
         return x
 
