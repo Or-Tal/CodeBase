@@ -177,7 +177,9 @@ class BaseSolver:
         torch.save(checkpoint, tmp_path)
         # renaming is sort of atomic on UNIX (not really true on NFS)
         # but still less chances of leaving a half written checkpoint behind.
-        os.rename(tmp_path, self.checkpoint_file_path)
+        if self.args.local_rank == 0:
+            os.rename(tmp_path, self.checkpoint_file_path)
+        distributed.barrier()
 
     def __init__(self, args):
         self.args = args
