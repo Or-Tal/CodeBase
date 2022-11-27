@@ -73,7 +73,7 @@ class DummyAE(nn.Module):
             x = en(x)
         for i, de in enumerate(self.decoders):
             if i != 0:
-                x = x + skips.pop()
+                x = self.pad_n_sum(x, skips.pop())
             x = de(x)
         return x
 
