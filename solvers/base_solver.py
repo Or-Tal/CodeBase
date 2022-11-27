@@ -223,6 +223,11 @@ class BaseSolver:
         else:
             outputs = self.model(batch)
         # logger.info(f"outputs: {type(outputs)}, batch: {type(batch)}, device: {device}")
+
+        if batch.shape[-1] > outputs.shape[-1]:
+            batch = batch[..., :outputs.shape[-1]]
+        elif batch.shape[-1] < outputs.shape[-1]:
+            outputs = outputs[..., :batch.shape[-1]]
         loss = loss_function(outputs.to(device), batch.to(device))
         if not validation:
             self.optimize(loss)
