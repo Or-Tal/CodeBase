@@ -22,10 +22,18 @@ def _log_obj(name, obj, prefix, _logger):
         _logger.info(f"{prefix}{name}: {obj}")
 
 
+def parse_value(value):
+    if isinstance(value, dict):
+        return copy_state(dict)
+    elif isinstance(value, list):
+        return [parse_value(v) for v in value]
+    elif isinstance(value, torch.Tensor) or isinstance(value, torch.cuda.Tensor):
+        return value.cpu().clone()
+    return value
+
+
 def copy_state(state):
-    return {k: copy_state(v) if isinstance(v, dict) else
-    [copy_state(t) for t in v] if isinstance(v, list) else
-    v.cpu().clone() if (isinstance(v, torch.Tensor) or isinstance(v, torch.cuda.Tensor)) else v for k, v in state.items()}
+    return {k: parse_value(v) for k, v in state.items()}
 
 
 @contextmanager
