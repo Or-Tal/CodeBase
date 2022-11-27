@@ -4,7 +4,7 @@
 import itertools
 import os
 import time
-from typing import Union, List
+from typing import Union, List, Iterable
 from pathlib import Path
 from data_objects.data_factory import DataFactory
 from models.model_factory import ModelFactory
@@ -238,7 +238,8 @@ class BaseSolver:
     def get_best_loss_from_history(self):
         min_loss = 1e20
         for step in self.history:
-            if step[0] < min_loss:
+            logger.info(self.history)
+            if step[0] if hasattr(step, "__getitem__") else step < min_loss:
                 min_loss = step[0]
         return min_loss
 
