@@ -86,6 +86,7 @@ class BaseSolver:
         return out
 
     def init_accelerator_object(self):
+        pass
 
     def initialize_with_accellerator(self, args, *object_list, device_placement=None):
         """
