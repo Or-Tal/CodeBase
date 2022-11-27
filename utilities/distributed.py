@@ -54,7 +54,7 @@ def average_over_all_gpus(values):
         return values
     tensor = torch.tensor(list(values) + [1], device='cuda', dtype=torch.float32)
     torch.distributed.all_reduce(tensor, op=torch.distributed.ReduceOp.SUM)
-    return (tensor[:-1] / tensor[-1]).cpu().numpy().tolist()
+    return (tensor[:-1] / tensor[-1]).cpu().numpy()
 
 
 def wrap(model):
