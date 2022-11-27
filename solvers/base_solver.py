@@ -192,7 +192,7 @@ class BaseSolver:
         self.reset(args)
 
     def accumulate_loss(self, losses, validation):
-        return distributed.average_over_all_gpus(losses)
+        return distributed.average_over_all_gpus(losses).mean()
 
     def inference(self, input_signal):
         return self.model(input_signal)
