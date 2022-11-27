@@ -6,6 +6,8 @@ from abc import ABC, abstractmethod
 from typing import Tuple, Union, Any
 from torch.utils.data.dataloader import DataLoader
 
+from utilities import distributed
+
 
 class BaseBuilder(ABC):
 
@@ -21,5 +23,5 @@ class BaseBuilder(ABC):
 
     @staticmethod
     def create_dataloader(dset_config, dataset, batch_size=None, shuffle=False):
-        return DataLoader(dataset=dataset, batch_size=batch_size or dset_config.batch_size,
-                          num_workers=dset_config.num_workers or 1, shuffle=shuffle)
+        return distributed.get_loader(dataset=dataset, batch_size=batch_size or dset_config.batch_size,
+                                      num_workers=dset_config.num_workers or 1, shuffle=shuffle)

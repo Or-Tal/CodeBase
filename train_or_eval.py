@@ -4,8 +4,10 @@
 import logging
 import os
 import hydra
+import torch
 
 from solvers.solver_factory import SolverFactory
+from utilities import distributed
 from utils import init_wandb, log_args
 
 logger = logging.getLogger(__name__)
@@ -31,6 +33,10 @@ def init_hydra_and_logs(args):
 
 
 def _main(args):
+    # init seed and distrib
+    torch.manual_seed(args.seed)
+    distributed.init(args)
+
     # init wandb
     init_wandb(args)
 

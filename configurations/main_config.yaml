@@ -15,6 +15,16 @@ experiment_name: dummy # this defines the directory this experiment is saved int
 solver_name: base
 train: True # if false, train_or_eval script will load best/last (depends on train config) and evaluate over the test set
 
+# distributed training
+ddp: True
+ddp_backend: nccl
+rendezvous_file: ./rendezvous
+
+# Internal config, don't set manually
+local_rank:
+num_gpus:
+
+
 # Weights and Biases
 wandb_mode: disabled # TODO: set to online to log
 

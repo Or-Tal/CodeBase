@@ -6,7 +6,6 @@ import os
 import time
 from typing import Union, List
 from pathlib import Path
-from accelerate.accelerator import Accelerator
 from data_objects.data_factory import DataFactory
 from models.model_factory import ModelFactory
 import torch
@@ -15,6 +14,7 @@ import logging
 import tqdm
 import wandb
 from solvers.loss_function_factory import LossFactory
+from utilities import distributed
 from utils import copy_state
 
 DEF_SUPPORTED_OPTIMIZERS = {
@@ -88,26 +88,26 @@ class BaseSolver:
     def init_accelerator_object(self):
         pass
 
-    def initialize_with_accellerator(self, args, *object_list, device_placement=None):
-        """
-        This function uses Accelerator Class by huggingface to manage all distributed training.
-        Prepare all objects passed in `args` for distributed training and mixed precision, then return them in the same
-        order.
-        :param args: full configuration
-        :param object_list: Any of the following objects:
-                                - `torch.utils.data.DataLoader`: PyTorch Dataloader
-                                - `torch.nn.Module`: PyTorch Module
-                                - `torch.optim.Optimizer`: PyTorch Optimizer
-                                - `torch.optim.lr_scheduler._LRScheduler`: PyTorch LR Scheduler
-        :param device_placement: (`List[bool]`, *optional*):
-                Used to customize whether automatic device placement should be performed for each object passed. Needs
-                to be a list of the same length as `args`.
-        :return: accelerator, list of objects as passed
-        """
-        accelerator = Accelerator()
-        flattened_objects, lengths = self._flatten_list_for_accellerator(object_list)
-        flattened_objects = accelerator.prepare(*flattened_objects)
-        return accelerator, self._unflatten_list_by_length(flattened_objects, lengths)
+    # def initialize_with_accellerator(self, args, *object_list, device_placement=None):
+    #     """
+    #     This function uses Accelerator Class by huggingface to manage all distributed training.
+    #     Prepare all objects passed in `args` for distributed training and mixed precision, then return them in the same
+    #     order.
+    #     :param args: full configuration
+    #     :param object_list: Any of the following objects:
+    #                             - `torch.utils.data.DataLoader`: PyTorch Dataloader
+    #                             - `torch.nn.Module`: PyTorch Module
+    #                             - `torch.optim.Optimizer`: PyTorch Optimizer
+    #                             - `torch.optim.lr_scheduler._LRScheduler`: PyTorch LR Scheduler
+    #     :param device_placement: (`List[bool]`, *optional*):
+    #             Used to customize whether automatic device placement should be performed for each object passed. Needs
+    #             to be a list of the same length as `args`.
+    #     :return: accelerator, list of objects as passed
+    #     """
+    #     accelerator = Accelerator()
+    #     flattened_objects, lengths = self._flatten_list_for_accellerator(object_list)
+    #     flattened_objects = accelerator.prepare(*flattened_objects)
+    #     return accelerator, self._unflatten_list_by_length(flattened_objects, lengths)
 
     def load_model_to_gpu(self, models):
         if torch.cuda.is_available():
@@ -126,24 +126,25 @@ class BaseSolver:
         models = ModelFactory.get_model(args.model)
         data_loaders = DataFactory.get_loaders(args.data)
         optimizers = self.get_optimizers(args.training, models)
-        self.load_model_to_gpu(models)
 
-        accelerator, tmp = \
-            self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
+        # accelerator, tmp = \
+        #     self.initialize_with_accellerator(args, [models, data_loaders, optimizers])
+        #
+        # # TODO: debug why this phenomena happens?
+        # while (isinstance(tmp[0], tuple) or isinstance(tmp[0], list)) and len(tmp) == 1:
+        #     tmp = tmp[0]
+        #
+        # logger.info(f"len: {len(tmp)} | [{', '.join([f'{type(t)}' for t in tmp])}]")
+        #
+        # models, data_loaders, optimizers = tmp[0], tmp[1], tmp[2]
 
-        # TODO: debug why this phenomena happens?
-        while (isinstance(tmp[0], tuple) or isinstance(tmp[0], list)) and len(tmp) == 1:
-            tmp = tmp[0]
-
-        logger.info(f"len: {len(tmp)} | [{', '.join([f'{type(t)}' for t in tmp])}]")
-
-        models, data_loaders, optimizers = tmp[0], tmp[1], tmp[2]
-
-        return accelerator, models, data_loaders, optimizers
+        # return accelerator, models, data_loaders, optimizers
+        return models, data_loaders, optimizers
 
     def define_all_objects(self, args):
-        accelerator, models, data_loaders, optimizers = self.initialize_all_training_objects(args)
-        self.accelerator = accelerator
+        models, data_loaders, optimizers = self.initialize_all_training_objects(args)
+        # accelerator, models, data_loaders, optimizers = self.initialize_all_training_objects(args)
+        # self.accelerator = accelerator
         self.model = models
         self.tr_dl, self.cv_dl, self.tt_dl, self.enh_dl = data_loaders
         self.opt = optimizers
@@ -224,7 +225,7 @@ class BaseSolver:
         self.reset(args)
 
     def accumulate_loss(self, losses, validation):
-        return torch.mean(losses)
+        return distributed.average_over_all_gpus(losses)
 
     def inference(self, input_signal):
         return self.model(input_signal)
@@ -238,8 +239,8 @@ class BaseSolver:
 
     def optimize(self, loss):
         with torch.autograd.set_detect_anomaly(True):
-            # loss.backward()
-            self.accelerator.backward(loss)
+            loss.backward()
+            # self.accelerator.backward(loss)
             self.opt.step()
             self.opt.zero_grad()
 
