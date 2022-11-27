@@ -239,7 +239,7 @@ class BaseSolver:
         min_loss = 1e20
         for step in self.history:
             logger.info(self.history)
-            if step[0] if hasattr(step, "__getitem__") else step < min_loss:
+            if step[0] if isinstance(step, list) else step < min_loss:
                 min_loss = step[0]
         return min_loss
 
