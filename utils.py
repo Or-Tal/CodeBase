@@ -23,7 +23,8 @@ def _log_obj(name, obj, prefix, _logger):
 
 
 def copy_state(state):
-    return {k: v.cpu().clone() for k, v in state.items()}
+
+    return {k: copy_state(v) if isinstance(v, dict) else v.cpu().clone() for k, v in state.items()}
 
 
 @contextmanager
