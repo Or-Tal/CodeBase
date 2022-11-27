@@ -222,7 +222,7 @@ class BaseSolver:
                 outputs = self.model(batch)
         else:
             outputs = self.model(batch)
-        logger.info(f"outputs: {type(outputs)}, batch: {type(batch)}, device: {device}")
+        # logger.info(f"outputs: {type(outputs)}, batch: {type(batch)}, device: {device}")
         loss = loss_function(outputs.to(device), batch.to(device))
         if not validation:
             self.optimize(loss)
