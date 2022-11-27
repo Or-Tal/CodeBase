@@ -27,7 +27,7 @@ def parse_value(value):
         return copy_state(value)
     elif isinstance(value, list):
         return [parse_value(v) for v in value]
-    elif isinstance(value, torch.Tensor) or isinstance(value, torch.cuda.Tensor):
+    elif 'torch' in type(value):
         return value.cpu().clone()
     return value
 
