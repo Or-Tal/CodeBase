@@ -61,6 +61,9 @@ def wrap(model):
     """
     Wrap a model for distributed training.
     """
+    if torch.cuda.is_available():
+        model.to('cuda')
+
     if num_gpus == 1:
         return model
     else:

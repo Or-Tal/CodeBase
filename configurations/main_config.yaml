@@ -19,6 +19,7 @@ train: True # if false, train_or_eval script will load best/last (depends on tra
 ddp: True
 ddp_backend: nccl
 rendezvous_file: ./rendezvous
+device: cuda  # in {cpu, cuda}
 
 # Internal config, don't set manually
 local_rank:
