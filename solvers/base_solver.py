@@ -157,7 +157,7 @@ class BaseSolver:
             self.history = self.reset_history(args, checkpoint_content)
 
     def serialize_models(self):
-        return {"best": self.best_state, "last": copy_state(self.model.state_dict())}
+        return {"best_state": self.best_state, "last_state": copy_state(self.model.state_dict())}
 
     def serialize_optimizers(self):
         return copy_state(self.opt.state_dict())
