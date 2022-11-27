@@ -200,7 +200,7 @@ class BaseSolver:
     def run_single_epoch(self, loss_function, epoch_num, validation=False):
         loader = self.cv_dl if validation else self.tr_dl
         losses = []
-        device = next(self.model.parameters()).device
+        device = 'cuda' if torch.cuda.is_available() and self.args.device == 'cuda' else 'cpu'
         for batch in tqdm.tqdm(loader, desc=f"Epoch {epoch_num} [{'Valid' if validation else 'Train'}]:", leave=False):
             losses.append(self.run_single_batch(loss_function, batch, epoch_num, validation, device=device))
         return self.accumulate_loss(losses, validation)
@@ -214,7 +214,7 @@ class BaseSolver:
 
     def run_single_batch(self, loss_function, batch, epoch_num, validation=False, device=None):
         if device is None:
-            device = next(self.model.parameters()).device
+            device = 'cuda' if torch.cuda.is_available() and self.args.device == 'cuda' else 'cpu'
         batch.to(device)
 
         if validation:
