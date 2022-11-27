@@ -308,6 +308,8 @@ class BaseSolver:
             logger.info(f"==== TRAINING ====")
 
         logger.info(f"is cuda: {next(self.model.parameters()).is_cuda}")
+        logger.info(f"num_gpus: {self.args.num_gpus}")
+
 
         # Training loop
         best_loss = self.get_best_loss_from_history()
