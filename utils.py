@@ -27,7 +27,7 @@ def parse_value(value):
         return copy_state(value)
     elif isinstance(value, list):
         return [parse_value(v) for v in value]
-    elif 'torch' in type(value):
+    elif 'torch' in f"{type(value)}":
         return value.cpu().clone()
     return value
 
