@@ -24,7 +24,7 @@ def _log_obj(name, obj, prefix, _logger):
 
 def parse_value(value):
     if isinstance(value, dict):
-        return copy_state(dict)
+        return copy_state(value)
     elif isinstance(value, list):
         return [parse_value(v) for v in value]
     elif isinstance(value, torch.Tensor) or isinstance(value, torch.cuda.Tensor):
