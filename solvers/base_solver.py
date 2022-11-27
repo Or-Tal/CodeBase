@@ -238,7 +238,6 @@ class BaseSolver:
     def get_best_loss_from_history(self):
         min_loss = 1e20
         for step in self.history:
-            logger.info(self.history)
             tmp = step[0] if isinstance(step, list) else step
             if tmp < min_loss:
                 min_loss = tmp
