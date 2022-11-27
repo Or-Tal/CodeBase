@@ -140,21 +140,20 @@ class ChildrenManager:
 
 def start_ddp_workers(cfg, logger=None):
     import torch as th
+    if logger is None:
+        logger = logging.getLogger(__name__)
     # log = cfg.hydra.job_logging.handlers.file.filename
     log = hutils.HydraConfig().cfg.hydra.job_logging.handlers.file.filename
     rendezvous_file = Path(cfg.rendezvous_file)
     if rendezvous_file.exists():
         rendezvous_file.unlink()
 
-    world_size = th.cuda.device_count()
-    if not world_size:
-        if logger:
-            logger.error(
-                "DDP is only available on GPU. Make sure GPUs are properly configured with cuda.")
-            sys.exit(1)
-        else:
-            raise ValueError("DDP is only available on GPU. Make sure GPUs are properly configured with cuda.")
-    logger.info(f"Starting {world_size} worker processes for DDP.")
+    num_gpus = th.cuda.device_count()
+    if not num_gpus:
+        logger.error(
+            "DDP is only available on GPU. Make sure GPUs are properly configured with cuda.")
+        sys.exit(1)
+    logger.info(f"Starting {num_gpus} worker processes for DDP.")
     with ChildrenManager() as manager:
         for local_rank in range(num_gpus):
             kwargs = {}
