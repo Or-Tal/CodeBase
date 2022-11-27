@@ -67,7 +67,7 @@ def wrap(model):
         return DistributedDataParallel(
             model,
             device_ids=[torch.cuda.current_device()],
-            output_device=torch.cuda.current_device())
+            output_device=[torch.cuda.current_device()])
 
 
 def barrier():
